@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+    env:{
+        SERVER : 'https://localhost:5000'
+    }
     
 };
 

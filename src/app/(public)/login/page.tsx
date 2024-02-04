@@ -15,6 +15,8 @@ const LoginSchema = z.object({
         password: z.string().min(6,'senha de no mínimo 6 caracteres')
     });
 export default function Login() {
+    const [error,setError] = useState('')
+    const ChangeError = useCallback
     const {
         register,handleSubmit,
         formState: { errors },
@@ -48,10 +50,11 @@ export default function Login() {
 }
 
 function PostForm(data){
-    axios.post(`${server}/auth/login`,data).then((res)=>{
-        console.log(res.data)
-    }).catch((err)=>{
-        console.log(err)
+   console.log(data)
+    axios.post(`${server}/auth/login`,data).then((res)=> {
+        console.log(res)
+    }).catch((err)=> {
+        console.log(err.request.response)
     })
 //chamar a api na rota publica(onde nao tem jwt e todo mundo pode)
 

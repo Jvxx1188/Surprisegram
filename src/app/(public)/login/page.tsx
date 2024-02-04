@@ -16,7 +16,7 @@ const LoginSchema = z.object({
     });
 export default function Login() {
     const [error,setError] = useState('')
-    const ChangeError = useCallback
+    
     const {
         register,handleSubmit,
         formState: { errors },
@@ -51,8 +51,9 @@ export default function Login() {
 
 function PostForm(data){
    console.log(data)
+
     axios.post(`${server}/auth/login`,data).then((res)=> {
-        console.log(res)
+        console.log(res.data)
     }).catch((err)=> {
         console.log(err.request.response)
     })

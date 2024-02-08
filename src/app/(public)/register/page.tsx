@@ -7,6 +7,8 @@ import { useForm, SubmitHandler } from "react-hook-form"
 import {useState, useEffect } from "react";
 import { json } from "stream/consumers";
 import axios from 'axios'
+import { redirect } from 'next/navigation'
+import Link from 'next/link'
 dotenv.config()
 const server = process.env.SERVER;
 
@@ -32,20 +34,20 @@ export default function Login() {
     const {
         register,handleSubmit,
         formState: { errors },
-      } = useForm<z.infer<typeof LoginSchema>>(
+      } = useForm<z.infer<typeof RegisterSchema>>(
         {resolver : zodResolver(RegisterSchema)}
       );
 
     return <>
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 ">
     <h1 className="text-3xl font-bold">Register</h1>
     
     <form className="flex flex-col gap-4 justify-center " onSubmit={handleSubmit((data)=>PostFormRegister(data))}>
         
         {/*Username*/}
         <div className="flex flex-col gap-4">
-            <label className="text-gray-500 " htmlFor="email">Enter your username</label>
-            <input  className=" outline-none border-b-2 transition duration-300 focus:border-gray-700" type="text" id="text" name="text" {...register("username")}/>
+            <label className="text-gray-500 " htmlFor="username">Enter your username</label>
+            <input  className=" outline-none border-b-2 transition duration-300 focus:border-gray-700" type="text" id="username" {...register("username")}/>
         </div>
         {errors.username && <p>errors.username.message</p>}
         {/*EMAIL*/}
@@ -71,18 +73,34 @@ export default function Login() {
         {errors.password && <p>{errors.password.message}</p>}
         <button type="submit" className="bg-green-400 w-20 p-3 rounded-xl flex self-center justify-center duration-200 hover:bg-black hover:text-white">Continue</button>
       
+     
         </form>
-        
+        <span className="text-gray-800">Already have an account? <Link className="text-cyan-500 text-underline hover:underline" href="/login">Sing in</Link></span>
+        <p className='text-red-500 text-end' id="register-return-error"></p>
     </div>
     </>
 }
 
-function PostFormRegister(data){
-   console.log(data)
-
+function PostFormRegister(data : any){
+    
+    const errorTag = document.getElementById('register-return-error')
+    if(!errorTag) return console.log('nulo', errorTag)
+    
+    
+    console.log(data)
+    
     axios.post(`${server}/auth/register`,data).then((res)=> {
+        errorTag.innerHTML = ''
+        return setTimeout(()=>window.location.replace("/login"),1000)
         console.log(res.data)
-    }).catch((err)=> {
+    }).catch(async (err)=> {
+       //se o servidor estiver offline
+        if(!err.request.response) return errorTag.innerHTML = 'servidor possívelmente offline';
+        //erros de server
+        const error = await JSON.parse(err.request.response).error
+        
+        
+        errorTag.innerHTML = 'Erro : ' + error;
         console.log(err.request.response)
     })
 //chamar a api na rota publica(onde nao tem jwt e todo mundo pode)

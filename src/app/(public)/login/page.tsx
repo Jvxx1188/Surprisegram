@@ -8,6 +8,7 @@ import {useState, useEffect } from "react";
 import axios from 'axios'
 import Link from 'next/link'
 import { redirect } from 'next/navigation';
+import { toast } from 'sonner';
 dotenv.config()
 const server = process.env.SERVER;
 
@@ -63,7 +64,7 @@ export default function Login() {
 }
 
 
-function PostForm(data){
+function PostForm(data : any){
     console.log(data) 
      
      axios.post(`${server}/auth/login`,data).then((res)=> {
@@ -81,7 +82,7 @@ function PostForm(data){
         const errorTag = document.getElementById('login-return-error')
          if(!errorTag) return console.log('nulo', errorTag)
         //se o servidor estiver offline
-        if(!err.request.response) return errorTag.innerHTML = 'servidor possívelmente offline';
+        if(!err.request.response) return toast('servidor');
         //se realmente deu erro
          const error =await JSON.parse(err.request.response).error
          errorTag.innerHTML = 'Erro : ' + error;

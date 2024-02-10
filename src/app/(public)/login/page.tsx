@@ -4,10 +4,9 @@ import "./globals.css";
 import z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, SubmitHandler } from "react-hook-form"
-import {useState, useEffect, useCallback } from "react";
+import {useState, useEffect } from "react";
 import { json } from "stream/consumers";
 import axios from 'axios'
-import {toast} from 'sonner'
 dotenv.config()
 const server = process.env.SERVER;
 
@@ -16,14 +15,24 @@ const LoginSchema = z.object({
         password: z.string().min(6,'senha de no mínimo 6 caracteres')
     });
 export default function Login() {
+    //token existe?
+
+
     const [error,setError] = useState('')
-    const ChangeError = useCallback
     const {
         register,handleSubmit,
         formState: { errors },
       } = useForm<z.infer<typeof LoginSchema>>(
         {resolver : zodResolver(LoginSchema)}
       );
+        
+    const token = localStorage.getItem('token')
+    if(token) {
+        redirect("/")
+
+        return <h1>Redirecionando</h1>
+    }
+      
 
     return <>
     <div className="flex flex-col gap-4">
@@ -35,7 +44,7 @@ export default function Login() {
             <label className="text-gray-500 " htmlFor="email">Enter your email</label>
             <input {...register("email")} className=" outline-none border-b-2 transition duration-300 focus:border-gray-700" type="email" id="email" name="email"/>
         </div>
-       {errors.email && <p>errors.email.message</p>}
+       {errors.email && <p>{errors.email.message}</p>}
         {/*PASSWORD*/}
         <div className="flex flex-col gap-4">
             <label className="text-gray-500" htmlFor="password">Enter your password</label>
@@ -46,20 +55,19 @@ export default function Login() {
       
         </form>
         
+        <span className="text-gray-800 ">{`Don't have an account?`} <Link className="text-cyan-500 hover:underline" href="/register">Sign Up</Link></span>
+      <p className='text-red-500 text-end' id="login-return-error"></p>
     </div>
     </>
 }
 
-function PostForm(data : any){
+
+function PostForm(data){
    console.log(data)
-    axios.post(`${server}/auth/login`,data).then((res : any)=> {
-        
+    axios.post(`${server}/auth/login`,data).then((res)=> {
         console.log(res)
-        //aqui eu só vou guardar o token e redirecionar para a pagina main
     }).catch((err)=> {
-        const {error} = JSON.parse(err.request.response)
-        console.log(error)
-        toast.error(error)
+        console.log(err.request.response)
     })
 //chamar a api na rota publica(onde nao tem jwt e todo mundo pode)
 

@@ -7,7 +7,8 @@ import { useForm, SubmitHandler } from "react-hook-form"
 import {useState, useEffect } from "react";
 import { json } from "stream/consumers";
 import axios from 'axios'
-import { redirect } from 'next/navigation'
+import { useRouter } from 'next/navigation'
+import {toast} from 'sonner'
 import Link from 'next/link'
 dotenv.config()
 const server = process.env.SERVER;
@@ -29,8 +30,21 @@ const RegisterSchema = z.object({
     );
 
 export default function Login() {
-    const [error,setError] = useState('')
-    
+     const router = useRouter()
+useEffect(()=>{
+const token = localStorage.getItem('token')
+ if(token) {
+         redirectToMain()
+         console.log('token existe, redirecionando...')
+    } 
+},[])   
+ 
+function redirectToMain(){
+    console.log('redirecting')
+    router.push('/login')
+}
+
+
     const {
         register,handleSubmit,
         formState: { errors },
@@ -42,7 +56,7 @@ export default function Login() {
     <div className="flex flex-col gap-6 ">
     <h1 className="text-3xl font-bold">Register</h1>
     
-    <form className="flex flex-col gap-4 justify-center " onSubmit={handleSubmit((data)=>PostFormRegister(data))}>
+    <form className="flex flex-col gap-4 justify-center " onSubmit={handleSubmit((data)=>PostFormRegister(data,redirectToMain))}>
         
         {/*Username*/}
         <div className="flex flex-col gap-4">
@@ -81,7 +95,7 @@ export default function Login() {
     </>
 }
 
-function PostFormRegister(data : any){
+function PostFormRegister(data : any,redirect : ()=> void){
     
     const errorTag = document.getElementById('register-return-error')
     if(!errorTag) return console.log('nulo', errorTag)
@@ -91,8 +105,8 @@ function PostFormRegister(data : any){
     
     axios.post(`${server}/auth/register`,data).then((res)=> {
         errorTag.innerHTML = ''
-        return setTimeout(()=>window.location.replace("/login"),1000)
-        console.log(res.data)
+        toast.success('Sucesso, redirecionando...')
+        redirect()
     }).catch(async (err)=> {
        //se o servidor estiver offline
         if(!err.request.response) return errorTag.innerHTML = 'servidor possívelmente offline';
@@ -100,8 +114,8 @@ function PostFormRegister(data : any){
         const error = await JSON.parse(err.request.response).error
         
         
-        errorTag.innerHTML = 'Erro : ' + error;
-        console.log(err.request.response)
+         return toast.error(error);
+        
     })
 //chamar a api na rota publica(onde nao tem jwt e todo mundo pode)
 

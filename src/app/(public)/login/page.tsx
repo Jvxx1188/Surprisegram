@@ -7,7 +7,7 @@ import { useForm, SubmitHandler } from "react-hook-form"
 import {useState, useEffect } from "react";
 import axios from 'axios'
 import Link from 'next/link'
-import { redirect } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 dotenv.config()
 const server = process.env.SERVER;
@@ -17,9 +17,21 @@ const LoginSchema = z.object({
         password: z.string().min(6,'senha de no mínimo 6 caracteres')
     });
 export default function Login() {
+    const router = useRouter()
     //token existe?
+function redirectToMain(){
+    console.log('redirecting')
+    router.push('/')
+}
 
-
+useEffect(()=>{
+const token = localStorage.getItem('token')
+ if(token) {
+         redirectToMain()
+         console.log('token existe, redirecionando...')
+    } 
+},[])   
+ 
     const [error,setError] = useState('')
     const {
         register,handleSubmit,
@@ -28,19 +40,14 @@ export default function Login() {
         {resolver : zodResolver(LoginSchema)}
       );
         
-    const token = localStorage.getItem('token')
-    if(token) {
-        redirect("/")
-
-        return <h1>Redirecionando</h1>
-    }
+   
       
 
     return <>
     <div className="flex flex-col gap-4">
     <h1 className="text-3xl font-bold">Login</h1>
     
-    <form className="flex flex-col gap-4 justify-center " onSubmit={handleSubmit((data)=>PostForm(data))}>
+    <form className="flex flex-col gap-4 justify-center " onSubmit={handleSubmit((data)=>PostForm(data,redirectToMain))}>
         {/*EMAIL*/}
         <div className="flex flex-col gap-4">
             <label className="text-gray-500 " htmlFor="email">Enter your email</label>
@@ -64,33 +71,35 @@ export default function Login() {
 }
 
 
-function PostForm(data : any){
+function PostForm(data : any,redirect :()=> void){
     console.log(data) 
      
      axios.post(`${server}/auth/login`,data).then((res)=> {
+        
          //reset error tag
          const errorTag = document.getElementById('login-return-error')
          if(!errorTag) return console.log('nulo', errorTag)
          errorTag.innerHTML = ''
 
          //return window.location.replace("/register");
-         const obj =JSON.parse(res.request.response);
-         console.log(typeof obj)
-         console.log(obj.token)
-         localStorage.setItem('token',obj.token)
+         const {token} =JSON.parse(res.request.response);
+         console.log(typeof token)
+         localStorage.setItem('token',token)
+         console.log(token)
+         return redirect()
      }).catch(async (err)=> {
+
         const errorTag = document.getElementById('login-return-error')
-         if(!errorTag) return console.log('nulo', errorTag)
+         if(!errorTag) return 
         //se o servidor estiver offline
-        if(!err.request.response) return toast('servidor');
+        if(!err.request.response) return toast.error('Servidor possívelmente offline');
         //se realmente deu erro
          const error =await JSON.parse(err.request.response).error
-         errorTag.innerHTML = 'Erro : ' + error;
-     
+         
+        return toast.error(error);
      })
 
  //chamar a api na rota publica(onde nao tem jwt e todo mundo pode)
  
  }
- 
 //BY JVXX

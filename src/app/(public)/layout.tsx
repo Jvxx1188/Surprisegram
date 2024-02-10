@@ -15,7 +15,7 @@ export default function RootLayout({
           <p className="absolute left-[50%] translate-x-[-50%] top-[0.5%] font-bold text-white text-3xl font-italic">Surprisegram</p>
         {children}
         </main>
-        <Toaster/>
+        <Toaster theme='light' className="bg-slate-600"/>
         </body>
     </html>
   )

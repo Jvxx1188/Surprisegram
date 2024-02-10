@@ -6,8 +6,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, SubmitHandler } from "react-hook-form"
 import {useState, useEffect } from "react";
 import axios from 'axios'
-import { redirect } from 'next/navigation';
 import Link from 'next/link'
+import { redirect } from 'next/navigation';
 dotenv.config()
 const server = process.env.SERVER;
 
@@ -63,7 +63,7 @@ export default function Login() {
 }
 
 
-function PostForm(data : any){
+function PostForm(data){
     console.log(data) 
      
      axios.post(`${server}/auth/login`,data).then((res)=> {

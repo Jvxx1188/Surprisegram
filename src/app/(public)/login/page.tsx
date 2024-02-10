@@ -4,9 +4,10 @@ import "./globals.css";
 import z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, SubmitHandler } from "react-hook-form"
-import {useState, useEffect } from "react";
+import {useState, useEffect, useCallback } from "react";
 import { json } from "stream/consumers";
 import axios from 'axios'
+import {toast} from 'sonner'
 dotenv.config()
 const server = process.env.SERVER;
 
@@ -49,12 +50,16 @@ export default function Login() {
     </>
 }
 
-function PostForm(data){
+function PostForm(data : any){
    console.log(data)
-    axios.post(`${server}/auth/login`,data).then((res)=> {
+    axios.post(`${server}/auth/login`,data).then((res : any)=> {
+        
         console.log(res)
+        //aqui eu só vou guardar o token e redirecionar para a pagina main
     }).catch((err)=> {
-        console.log(err.request.response)
+        const {error} = JSON.parse(err.request.response)
+        console.log(error)
+        toast.error(error)
     })
 //chamar a api na rota publica(onde nao tem jwt e todo mundo pode)
 

@@ -1,26 +1,14 @@
 'use client'
-import { redirect } from "next/navigation";
-import Link from "next/link";
-import { useRouter } from 'next/navigation'
-import {useEffect} from 'react'
-export default function Home() {
-  const {push} = useRouter();
-  useEffect(()=>{
-    console.log('usefect')
-const token = localStorage.getItem('token')
- if(!token) {
-    
-         push('/login')
-         console.log('token não existe, redirecionando...')
-    } 
-},[])   
- 
 
+import Link from "next/link";
+import { Post } from "@/components/post";
+export default function Home() {
+ 
 return (
-    <main>
-    <div className="">
-      <Link href={'/login'}>login</Link>
-    </div>
+
+  
+    <main id="post-container">
+      <Post username="Jvxx" title="meu primeiro post porem é um lorem ispurmeu primeiro post porem é um lorem ispurmeu primeiro post porem é um lorem ispurmeu primeiro post porem é um lorem ispurmeu primeiro post porem é um lorem ispurmeu primeiro post porem é um lorem ispurmeu primeiro post porem é um lorem ispurmeu primeiro post porem é um lorem ispurmeu primeiro post porem é um lorem ispurmeu primeiro post porem é um lorem ispurmeu primeiro post porem é um lorem ispurmeu primeiro post porem é um lorem ispurmeu primeiro post porem é um lorem ispurmeu primeiro post porem é um lorem ispur" likesCount={3}/>
     </main>
   );
 }

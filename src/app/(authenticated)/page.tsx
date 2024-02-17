@@ -8,7 +8,7 @@ return (
 
   
     <main id="post-container">
-      <Post username="Jvxx" title="meu primeiro post porem é um lorem ispurmeu primeiro post porem é um lorem ispurmeu primeiro post porem é um lorem ispurmeu primeiro post porem é um lorem ispurmeu primeiro post porem é um lorem ispurmeu primeiro post porem é um lorem ispurmeu primeiro post porem é um lorem ispurmeu primeiro post porem é um lorem ispurmeu primeiro post porem é um lorem ispurmeu primeiro post porem é um lorem ispurmeu primeiro post porem é um lorem ispurmeu primeiro post porem é um lorem ispurmeu primeiro post porem é um lorem ispurmeu primeiro post porem é um lorem ispur" likesCount={3}/>
+      <Post username="Jvxx" title="meu primeiro post porem é um lorem ispurmeu primeiro post porem é um lorem ispurmeu" likesCount={3}/>
     </main>
   );
 }

@@ -17,6 +17,7 @@ const LoginSchema = z.object({
         password: z.string().min(6,'senha de no mínimo 6 caracteres')
     });
 export default function Login() {
+    const [isSubmiting,setIsSubmiting] = useState(false)
     const router = useRouter()
     //token existe?
 function redirectToMain(){
@@ -47,7 +48,7 @@ const token = localStorage.getItem('token')
     <div className="flex flex-col gap-4">
     <h1 className="text-3xl font-bold">Login</h1>
     
-    <form className="flex flex-col gap-4 justify-center " onSubmit={handleSubmit((data)=>PostForm(data,redirectToMain))}>
+    <form className="flex flex-col gap-4 justify-center " onSubmit={handleSubmit((data)=>PostForm(data,redirectToMain,isSubmiting,setIsSubmiting))}>
         {/*EMAIL*/}
         <div className="flex flex-col gap-4">
             <label className="text-gray-500 " htmlFor="email">Enter your email</label>
@@ -60,7 +61,9 @@ const token = localStorage.getItem('token')
             <input className=" outline-none border-b-2 transition duration-300 focus:border-gray-700" type="password" id="password" {...register("password")}/>
         </div>
         {errors.password && <p>{errors.password.message}</p>}
-        <button type="submit" className="bg-green-400 w-20 p-3 rounded-xl flex self-center justify-center duration-200 hover:bg-black hover:text-white">Continue</button>
+        <button type="submit" className="bg-green-400 p-3 rounded-xl flex self-center justify-center duration-200 hover:bg-black hover:text-white">
+        {isSubmiting ? 'Entrando...' : 'Login'}
+        </button>
       
         </form>
         
@@ -71,7 +74,9 @@ const token = localStorage.getItem('token')
 }
 
 
-function PostForm(data : any,redirect :()=> void){
+function PostForm(data : any,redirect :()=> void,isSubmiting : boolean,SetisSubmiting : (bol : boolean) => void){
+    if(isSubmiting) return console.log('ja submitando');
+    SetisSubmiting(true)
     console.log(data) 
      
      axios.post(`${server}/auth/login`,data).then((res)=> {
@@ -88,7 +93,7 @@ function PostForm(data : any,redirect :()=> void){
          console.log(token)
          return redirect()
      }).catch(async (err)=> {
-
+        SetisSubmiting(false)
         const errorTag = document.getElementById('login-return-error')
          if(!errorTag) return 
         //se o servidor estiver offline

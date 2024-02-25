@@ -3,7 +3,14 @@ const nextConfig = {
     env:{
         SERVER : 'http://localhost:5000'
     },
-    
+    images : {
+        remotePatterns: [
+            {
+                protocol: 'https',
+                hostname: '**',
+            },
+        ],
+    },
     async headers() {
         return [
             {

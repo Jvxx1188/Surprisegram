@@ -21,7 +21,7 @@ export default function RootLayout({
   
   return (
     <html lang="en">
-      <body className={inter.className + ' flex flex-col h-screen bg-gradient-to-b from-violet-950 to-violet-800 bg-cover'}>
+      <body className={inter.className + ' flex flex-col h-screen bg-gradient-to-b from-violet-950 to-violet-800 bg-cover bg-fixed'}>
         <Header/>
         {children}
         <Toaster/>

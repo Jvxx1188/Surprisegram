@@ -29,8 +29,9 @@ const RegisterSchema = z.object({
     }
     );
 
-export default function Login() {
+export default function Register() {
      const router = useRouter()
+     const [isSubmiting,setIsSubmiting] = useState(false)
 useEffect(()=>{
 const token = localStorage.getItem('token')
  if(token) {
@@ -56,7 +57,7 @@ function redirectToMain(){
     <div className="flex flex-col gap-6 ">
     <h1 className="text-3xl font-bold">Register</h1>
     
-    <form className="flex flex-col gap-4 justify-center " onSubmit={handleSubmit((data)=>PostFormRegister(data,redirectToMain))}>
+    <form className="flex flex-col gap-4 justify-center " onSubmit={handleSubmit((data)=>PostFormRegister(data,redirectToMain,isSubmiting,setIsSubmiting))}>
         
         {/*Username*/}
         <div className="flex flex-col gap-4">
@@ -85,7 +86,10 @@ function redirectToMain(){
         {errors.confirmPassword && <p>{errors.confirmPassword.message}</p>}
         
         {errors.password && <p>{errors.password.message}</p>}
-        <button type="submit" className="bg-green-400 w-20 p-3 rounded-xl flex self-center justify-center duration-200 hover:bg-black hover:text-white">Continue</button>
+
+        <button type="submit" className="bg-green-400 p-3 rounded-xl flex self-center justify-center duration-200 hover:bg-black hover:text-white">
+           {isSubmiting ? 'Registrando' : 'Registrar'}
+            </button>
       
      
         </form>
@@ -95,8 +99,9 @@ function redirectToMain(){
     </>
 }
 
-function PostFormRegister(data : any,redirect : ()=> void){
-    
+function PostFormRegister(data : any,redirect : ()=> void,isSubmiting : boolean,SetisSubmiting : (bol : boolean) => void){
+    if(isSubmiting) return console.log('ja submitando');
+    SetisSubmiting(true)
     const errorTag = document.getElementById('register-return-error')
     if(!errorTag) return console.log('nulo', errorTag)
     
@@ -113,7 +118,7 @@ function PostFormRegister(data : any,redirect : ()=> void){
         //erros de server
         const error = await JSON.parse(err.request.response).error
         
-        
+        SetisSubmiting(false)
          return toast.error(error);
         
     })

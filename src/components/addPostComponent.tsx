@@ -13,15 +13,12 @@ import {Label} from '@/components/ui/label'
 import { PlusCircle } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner"
+import axios from "axios"
+import getToken from "@/lib/get-token"
 export function AddPostComponent(){
   const form = useForm()
 
-  function handleRestart(bool : boolean) {
-    if(bool){
-      form.reset()
-    }
-  }
-    return <Dialog onOpenChange={(bool) => handleRestart(bool)}>
+    return <Dialog >
         <DialogTrigger className="bg-violet-950 rounded-3xl font-bold py-2 px-2 flex flex-row gap-2 hover:bg-lime-700 hover:cursor-pointer select-none active:bg-black">
     <p>Add post</p>
     <PlusCircle/>
@@ -53,20 +50,27 @@ export function AddPostComponent(){
     <FormField
     control={form.control}
     name="image"
-    render={({field})=>{
+    render={({field : {value,onChange,...field} })=>{
       return (
 
       <FormItem className="flex flex-col text-center justify-center">
         <FormLabel htmlFor="post-image-file" className="size-24 text-center flex items-center mx-auto  bg-violet-500 p-2 rounded-[10px] duration-500 focus:p-2 active:bg-black active:duration-0 hover:size-28 hover:cursor-pointer">Adicionar Imagem</FormLabel>
-        {
-          field.value && <p className='text-green-500 font-bolder md:w-56 '>Imagem Adicionada! {field.value}</p>
-        }
-        
+
         <FormControl>
-        <Input type='file' id='post-image-file' className="sr-only" placeholder="image" {...field}/>
+        <Input type='file' id='post-image-file' className="sr-only" placeholder="image"  accept="image/*" {...field} 
+        value={value?.fileName}
+        onChange={(e)=> {
+          if(e.target.files){
+            onChange(e.target.files[0])
+            console.log(e.target.files[0], )
+          }
+        } }
+        />
         </FormControl>
         
-        
+        {
+          value?.name && <p className='text-green-500 font-bold md:w-56 '>Imagem Adicionada! <span className="text-violet-400">{value.name}</span></p>
+        }
           <FormMessage />
       </FormItem>
     )}}
@@ -100,11 +104,23 @@ export function AddPostComponent(){
   </Dialog>
 }
 
-function submitPost(data : any) {
-  if(!data.title && !data.image){
+async function submitPost(data : any) {
+
+
+
+  return console.log(data)
+  const {image,title} = data;
+  if(!title && !image){
     return toast.message('adicione ao menos um comentário ou uma imagem!')
   }
+  console.log(data )
   toast.message('Enviando tlgd')
+  const postFormToSend = new FormData()
+  await postFormToSend.append('img',image)
+ await postFormToSend.append('title',title)
   const realData = {username : 'John Doe',...data}
-console.log(realData)
+
+  await axios.post('http://localhost:5000/posts/add',postFormToSend,{headers :{
+    Authorization : 'Bearer ' + getToken()
+  }}).then((res) => res.data).then((data)=> console.log(data)).catch((err) => console.log(err))
 }

@@ -8,6 +8,7 @@ import useSwr from 'swr'
 import { toast } from "sonner";
 import { AddPostComponent } from "@/components/addPostComponent";
 import { NavigateOptions } from "next/dist/shared/lib/app-router-context.shared-runtime";
+import getToken from "@/lib/get-token";
 export default function Header(){
   const url = 'http://localhost:5000'
   const {push} = useRouter()
@@ -33,7 +34,7 @@ export default function Header(){
 function GetUserFetch<Data = any>(url : string, push : (href: string, options?: NavigateOptions | undefined) => void){
    const {data,error} = useSwr<Data>(url+'/get/user',async (thisUrl : string)=>{
     //token exists
-    const tokenExists= localStorage.getItem('token')
+    const tokenExists= getToken()
     if(!tokenExists) { push('/login'); return console.log('token não existe, redirecionando...') } 
  //fetch with token in headers
  

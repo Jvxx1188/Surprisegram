@@ -1,14 +1,18 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    env:{
-        SERVER : 'http://localhost:5000'
+    env: {
+        SERVER: 'http://localhost:5000'
     },
-    images : {
+    images: {
         remotePatterns: [
             {
                 protocol: 'https',
                 hostname: '**',
+            }, {
+                protocol: 'http',
+                hostname: '**',
             },
+
         ],
     },
     async headers() {

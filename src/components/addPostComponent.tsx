@@ -141,16 +141,16 @@ async function submitPost(data: any, setSubmitting: (value: boolean) => void) {
   const postFormToSend = new FormData()
   //vamos verificar que se nao existir a imagem, eu quero enviar um fylestream vazia 
 
-  await postFormToSend.append('title', title)
-  await postFormToSend.append('isFriendly', isFriendly)
+  postFormToSend.append('title', (title ? title : ''))
+  postFormToSend.append('isFriendly', isFriendly)
 
   if (!image) {
     //criar uma fylestream vazia
-    const voidFile = await new File([''], 'img')
-    await postFormToSend.append('img', voidFile)
+    const voidFile = new File([''], 'img')
+    postFormToSend.append('img', voidFile)
     //dar append no meu form
   } else {
-    await postFormToSend.append('img', image)
+    postFormToSend.append('img', image)
   }
 
   await axios.post(serverUrl() + '/posts/add', postFormToSend, {

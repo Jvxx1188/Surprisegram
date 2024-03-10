@@ -140,6 +140,10 @@ async function submitPost(data: any, setSubmitting: (value: boolean) => void) {
   toast.message('Enviando post (O upload de imagem pode demorar)')
   const postFormToSend = new FormData()
   //vamos verificar que se nao existir a imagem, eu quero enviar um fylestream vazia 
+
+  await postFormToSend.append('title', title)
+  await postFormToSend.append('isFriendly', isFriendly)
+
   if (!image) {
     //criar uma fylestream vazia
     const voidFile = await new File([''], 'img')
@@ -149,8 +153,6 @@ async function submitPost(data: any, setSubmitting: (value: boolean) => void) {
     await postFormToSend.append('img', image)
   }
 
-  await postFormToSend.append('title', title)
-  await postFormToSend.append('isFriendly', isFriendly)
   await axios.post(serverUrl() + '/posts/add', postFormToSend, {
     headers: {
       Authorization: 'Bearer ' + getToken()

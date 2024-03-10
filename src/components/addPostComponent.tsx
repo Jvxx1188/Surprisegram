@@ -17,8 +17,15 @@ import axios from "axios"
 import getToken from "@/lib/get-token"
 import { blob } from "stream/consumers"
 import { useRouter } from "next/navigation"
+import { useState } from "react"
+import { serverUrl } from "@/lib/utils"
 export function AddPostComponent() {
 
+  const [submitting, setSubmitting] = useState(false)
+
+  function changeSubmit(value: boolean) {
+    setSubmitting(value)
+  }
   const form = useForm({
   })
 
@@ -37,7 +44,7 @@ export function AddPostComponent() {
         {/*/////////////////////*/}
 
         <Form {...form}>
-          <form className="flex flex-col gap-4" onSubmit={form.handleSubmit(submitPost)}>
+          <form className="flex flex-col gap-4" onSubmit={form.handleSubmit((e) => submitPost(e, changeSubmit))}>
             <section className="gap-4 flex flex-col md:flex-row">
               <FormField
                 control={form.control}
@@ -96,9 +103,16 @@ export function AddPostComponent() {
               )}
             />
 
-            <DialogClose>
-              <button className="p-3 mx-auto max-w-40 bg-violet-700 font-bold shadow-xl   rounded-xl">Enviar Post</button>
-            </DialogClose>
+            {
+              !submitting ? (
+                <DialogClose>
+                  <button className="p-3 mx-auto max-w-40 bg-violet-700 font-bold shadow-xl   rounded-xl">Enviar Post</button>
+                </DialogClose>
+              ) : (
+                <h1 className="text-center font-bold">O post ainda está carregando!</h1>
+              )
+            }
+
           </form>
         </Form>
         <DialogDescription className="text-red-500 hidden">
@@ -110,15 +124,16 @@ export function AddPostComponent() {
   </Dialog>
 }
 
-async function submitPost(data: any) {
+async function submitPost(data: any, setSubmitting: (value: boolean) => void) {
+  console.log(setSubmitting)
 
-
-
+  setSubmitting(true)
   const { image, title, isFriendly } = data;
 
   // (!isFriendly) {isFriendly = false}
 
   if (!title && !image) {
+    setSubmitting(false)
     return toast.message('adicione ao menos um comentário ou uma imagem!')
   }
   console.log(data)
@@ -136,12 +151,17 @@ async function submitPost(data: any) {
 
   await postFormToSend.append('title', title)
   await postFormToSend.append('isFriendly', isFriendly)
-  await axios.post('http://localhost:5000/posts/add', postFormToSend, {
+  await axios.post(serverUrl() + '/posts/add', postFormToSend, {
     headers: {
       Authorization: 'Bearer ' + getToken()
     }
   }).then((res) => res.data).then((data) => {
     toast.message(data.message + ' (aguarde ou reincie a página)')
-
-  }).catch((err) => console.log(err))
+    setSubmitting(false)
+  }).catch((err) => {
+    toast.error('ocorreu um erro ao enviar o post')
+    console.log(err)
+    setSubmitting(false)
+  })
+  setSubmitting(false)
 }

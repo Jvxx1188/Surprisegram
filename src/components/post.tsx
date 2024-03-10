@@ -89,7 +89,7 @@ export function Post({ username, title, likesCount, imgUrl, id }: PostProps) {
           )}
         </div>
 
-        <div className="ImageAndLike relative overflow-hidden pt-2">
+        <div className="ImageAndLike relative overflow-hidden">
           {imgUrl && (
             <Image
               className="select-none w-full rounded-3xl object-cover max-h-96"

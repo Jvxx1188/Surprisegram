@@ -1,4 +1,3 @@
-
 import type { Metadata } from "next";
 import React from "react";
 import { Inter } from "next/font/google";
@@ -16,19 +15,19 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
-
-  
   return (
     <html lang="en">
-      <body className={inter.className + ' flex flex-col h-screen bg-gradient-to-b from-violet-950 to-violet-800 bg-cover bg-fixed'}>
-        <Header/>
+      <link rel="icon" href="../ico.png" sizes="any" />
+      <body
+        className={
+          inter.className +
+          " flex flex-col h-screen bg-gradient-to-b from-violet-950 to-violet-800 bg-cover bg-fixed"
+        }
+      >
+        <Header />
         {children}
-        <Toaster/>
+        <Toaster />
       </body>
     </html>
   );
-
-
-  
 }

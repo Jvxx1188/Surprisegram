@@ -109,12 +109,11 @@ export function Post({ username, title, likesCount, imgUrl, id }: PostProps) {
   //criar componente de vizualização de objetos post
 }
 function LikeButton(likesCount: number, id: string) {
-
-  const [likes, setLikes] = useState(likesCount)
+  const [likes, setLikes] = useState(likesCount);
   const setLikesCount = () => {
-    console.log('increment')
-    setLikes(likesCount + 1)
-  }
+    console.log("increment");
+    setLikes(likesCount + 1);
+  };
   return (
     <button
       type="submit"
@@ -131,15 +130,18 @@ function LikeButton(likesCount: number, id: string) {
 }
 
 async function sendLike(id: string, setLikesCount: () => void) {
-  const fetcher = await axios.post(serverUrl() + "/posts/" + id + "/like", {}, {
-    headers: {
-      Authorization: 'Bearer ' + getToken()
+  const fetcher = await axios.post(
+    serverUrl() + "/posts/" + id + "/like",
+    {},
+    {
+      headers: {
+        Authorization: "Bearer " + getToken(),
+      },
     }
-  });
+  );
   if (fetcher.data.increment) {
-
-    setLikesCount()
+    setLikesCount();
   }
-  console.log(fetcher.data)
-  toast.message(fetcher.data.message)
+  console.log(fetcher.data);
+  toast.message(fetcher.data.message);
 }

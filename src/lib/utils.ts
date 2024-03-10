@@ -5,7 +5,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 export function serverUrl() {
-  //return "https://surprisegram2-api.vercel.app";
+  return "https://surprisegram2-api.vercel.app";
 
-  return "http://localhost:5000";
+  // return "http://localhost:5000";
 }

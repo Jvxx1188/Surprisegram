@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     env: {
-        SERVER: 'http://localhost:5000'
+        SERVER: 'https://surprisegram2-api.vercel.app'
     },
     images: {
         remotePatterns: [

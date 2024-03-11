@@ -6,7 +6,8 @@ export function cn(...inputs: ClassValue[]) {
 }
 export function serverUrl() {
   console.log(process.env.SERVER)
-  return process.env.SERVER;
+
+  return process.env.SERVER || 'undefined';
 
   // return "http://localhost:5000";
 }

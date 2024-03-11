@@ -5,7 +5,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 export function serverUrl() {
-  console.log(process.env.SERVER)
+  // console.log(process.env.SERVER)
 
   return process.env.SERVER || 'undefined';
 
